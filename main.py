@@ -12,6 +12,7 @@
 #
 # THE ABOVE STATEMENTS MUST ACCOMPANY ALL VERSIONS OF THIS CODE,
 # WHETHER ORIGINAL OR MODIFIED.
+import os
 
 import cv2
 import glob
@@ -27,8 +28,8 @@ def read_im(filename, colour):
     Returns:
         (np.ndarray): image of shape
     """
-    # TODO: replace with your implementation
-    return None
+    image = cv2.imread(filename, colour)
+    return image
 
 
 def write_im(filename, image):
@@ -38,8 +39,8 @@ def write_im(filename, image):
         filename (str): path to write to
         image (np.ndarray): image to be written
     """
-    # TODO: replace with your implementation
-    pass
+    cv2.imwrite(filename, image)
+
 
 def read_burst(dir, filetype, colour):
     """Read in all of the .jpg or .png images in a directory
@@ -52,8 +53,14 @@ def read_burst(dir, filetype, colour):
     Returns:
         (np.ndarray): image of shape (K, N, M, ...) where K is the number of images in dir
     """
-    # TODO: replace with your implementation
-    return None
+    files = [f for f in os.listdir(dir) if f.endswith(filetype)]
+    images = []
+    for file in files:
+        file_path = os.path.join(dir, file)
+        img = cv2.imread(file_path, colour)
+        images.append(img)
+    images_array = np.array(images)
+    return images_array
 
 def calculate_misty(image_stack):
     """Calculates the misty effect image
@@ -62,8 +69,8 @@ def calculate_misty(image_stack):
         image_stack (np.ndarray): stack of images to be mistified, shape is (K, N, M, ...), where ... is the number of colour channels
 
     """
-    # TODO: replace with your implementation
-    return None
+    misty_image = np.mean(image_stack, axis=0)
+    return misty_image
 
 if __name__ == '__main__':
 
@@ -73,7 +80,7 @@ if __name__ == '__main__':
     print("Colour", type(img), img.shape)
 
     # Write the same colour image, just as practice
-    write_im('./results/original-colour.png',img)
+    write_im('./results/original-colour.png', img)
 
     # Part A.2
     # Read in all images in the data directory in colour
@@ -85,7 +92,6 @@ if __name__ == '__main__':
     # Save misty image
     write_im('./results/misty-colour.png', misty_img)
 
-    # TODO: Part B, just a copy of part A but with different cv2 flag
     img = read_im('./data/0001.jpg', cv2.IMREAD_GRAYSCALE)
     print("Gray", type(img), img.shape)
     write_im('./results/original-grey.png',img)
